@@ -1,0 +1,9 @@
+[submodule "firmware/components/esp32-gpio-devices"]
+	path = firmware/components/esp32-gpio-devices
+	url = https://github.com/PATEmbedded/esp32-gpio-devices.git
+[submodule "firmware/components/esp32-time-sync"]
+	path = firmware/components/esp32-time-sync
+	url = https://github.com/PATEmbedded/esp32-time-sync.git
+[submodule "firmware/components/embedded-cpp-toolkit"]
+	path = firmware/components/embedded-cpp-toolkit
+	url = https://github.com/PATEmbedded/embedded-cpp-toolkit.git
