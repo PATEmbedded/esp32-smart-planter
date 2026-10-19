@@ -1,0 +1,5 @@
+# A task that stops resetting the watchdog for 5 s resets the chip, and with it the pump output.
+CONFIG_ESP_TASK_WDT_PANIC=y
+
+# 1 ms FreeRTOS ticks for the button and LED timing of esp32-gpio-devices.
+CONFIG_FREERTOS_HZ=1000

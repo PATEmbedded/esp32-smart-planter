@@ -1,0 +1,137 @@
+menu "Smart planter"
+
+    menu "Pins"
+
+        config PLANTER_MOISTURE_GPIO
+            int "Soil-moisture sensor (an ADC1 pin)"
+            default 3 if IDF_TARGET_ESP32C3
+            default 4 if IDF_TARGET_ESP32S3
+            default 34
+            help
+                Analog output of a capacitive soil-moisture sensor. It must be an ADC1
+                pin: ADC2 is not usable while Wi-Fi runs on the ESP32.
+
+        config PLANTER_PUMP_GPIO
+            int "Pump driver"
+            default 5 if IDF_TARGET_ESP32C3 || IDF_TARGET_ESP32S3
+            default 25
+            help
+                Gate of a logic-level MOSFET or input of a driver module. Give the gate a
+                pull-down resistor, so the pump stays off while the chip resets.
+
+        config PLANTER_PUMP_ACTIVE_LOW
+            bool "The pump runs while the pin is low"
+            default n
+
+        config PLANTER_TANK_GPIO
+            int "Tank float switch (-1 for none)"
+            default 6 if IDF_TARGET_ESP32C3 || IDF_TARGET_ESP32S3
+            default 26
+            help
+                A float switch to GND that closes when the tank is empty. The pin has an
+                internal pull-up, so an open switch, or none at all, reads as not empty.
+
+        config PLANTER_BUTTON_GPIO
+            int "Button"
+            default 9 if IDF_TARGET_ESP32C3
+            default 0
+            help
+                Click: one pulse of water now. Hold for three seconds: clear a fault.
+
+        config PLANTER_LED_GPIO
+            int "Status LED"
+            default 10 if IDF_TARGET_ESP32C3
+            default 2
+
+    endmenu
+
+    menu "Sensor calibration"
+
+        config PLANTER_DRY_MV
+            int "Sensor output in dry air (mV)"
+            default 2600
+
+        config PLANTER_WET_MV
+            int "Sensor output with the probe in water (mV)"
+            default 1100
+
+    endmenu
+
+    menu "Watering"
+
+        config PLANTER_START_BELOW
+            int "Start watering inside a window below (%)"
+            range 1 99
+            default 35
+
+        config PLANTER_STOP_AT
+            int "Stop watering at (%)"
+            range 1 100
+            default 55
+
+        config PLANTER_CRITICAL_BELOW
+            int "Water at any time below (%)"
+            range 0 99
+            default 15
+
+        config PLANTER_PULSE_S
+            int "Pump time of one pulse (s)"
+            range 1 60
+            default 5
+
+        config PLANTER_SOAK_S
+            int "Wait after each pulse (s)"
+            range 10 3600
+            default 60
+
+        config PLANTER_DAILY_BUDGET_S
+            int "Pump time per 24 hours at most (s)"
+            range 1 3600
+            default 60
+
+        config PLANTER_MAX_INEFFECTIVE_PULSES
+            int "Pulses without effect before a fault"
+            range 1 20
+            default 4
+
+        config PLANTER_MIN_RISE
+            int "Rise per pulse that counts as an effect (%)"
+            range 1 50
+            default 2
+
+        config PLANTER_WINDOW_1
+            string "Watering window 1 (HH:MM-HH:MM, empty for none)"
+            default "06:00-09:00"
+
+        config PLANTER_WINDOW_2
+            string "Watering window 2 (HH:MM-HH:MM, empty for none)"
+            default "18:00-21:00"
+
+    endmenu
+
+    menu "Network and time"
+
+        config PLANTER_WIFI_SSID
+            string "Wi-Fi network name (empty: run without network)"
+            default ""
+            help
+                Without a network the planter has no clock, and waters only soil that
+                is critically dry.
+
+        config PLANTER_WIFI_PASSWORD
+            string "Wi-Fi password"
+            default ""
+            help
+                Stored in the sdkconfig file of your build, which is not part of the repository.
+
+        config PLANTER_NTP_SERVER
+            string "Time server"
+            default "pool.ntp.org"
+
+        config PLANTER_TIMEZONE
+            string "Time zone (POSIX TZ string)"
+            default "CET-1CEST,M3.5.0,M10.5.0/3"
+
+    endmenu
+
+endmenu
